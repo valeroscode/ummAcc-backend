@@ -94,6 +94,26 @@ router.post("/sub", async (req, res) => {
   }
 });
 
+router.post("/newcomment", async (req, res) => {
+  try {
+    const { name, comment, id } = req.body;
+    const data = await postModel.findOneAndUpdate(
+      { _id: id },
+      {
+        $push: {
+          comments: {
+            name: name,
+            comment: comment,
+          },
+        },
+      }
+    );
+    res.json(data);
+  } catch (error) {
+    console.log(error.message);
+  }
+});
+
 router.post("/login", async (req, res) => {
   const { username, password } = req.body;
   const user = await UserModel.findOne({ username });
@@ -162,7 +182,7 @@ async function main(arr, title) {
     bcc: arr, // list of receivers
     subject: `NEW POST - ${title}`, // Subject line
     text: "Hello world?", // plain text body
-    html: `<h1>NEW POST - ${title}</h1><br/><a href="http://localhost:5173/" target="_blank">Go to site</a>`, // html body
+    html: `<h1>NEW POST - ${title}</h1><br/><a href="https://ummactually.onrender.com" target="_blank">Go to site</a>`, // html body
   });
 
   console.log("Message sent: %s", info.messageId);
